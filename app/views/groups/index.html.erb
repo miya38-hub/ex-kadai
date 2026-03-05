@@ -1,0 +1,43 @@
+<div class="container px-5 px-sm-0">
+  <div class="d-flex justify-content-between align-items-center">
+    <h2>Groups</h2>
+    <%= link_to "グループ作成", new_group_path, class: "btn btn-success" %>
+  </div>
+
+  <table class="table mt-3">
+    <thead>
+      <tr>
+        <th>グループ名</th>
+        <th>オーナー</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @groups.each do |g| %>
+        <tr>
+          <td>
+            <%= link_to g.name, group_path(g), class: "text-decoration-none" %>
+
+            <div class="mt-2">
+              <% if g.image&.attached? %>
+                <%= image_tag g.image,
+                      class: "img-fluid rounded",
+                      style: "width:120px;height:120px;object-fit:cover;" %>
+              <% else %>
+                <%= image_tag "no_image.jpg",
+                      class: "img-fluid rounded",
+                      style: "width:120px;height:120px;object-fit:cover;" %>
+              <% end %>
+            </div>
+          </td>
+          <td><%= link_to g.owner.name, user_path(g.owner), class: "text-decoration-none" %></td>
+          <td class="text-end">
+            <% if g.owner_id == current_user.id %>
+              <%= link_to "Edit", edit_group_path(g), class: "btn btn-outline-secondary btn-sm" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

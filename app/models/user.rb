@@ -8,6 +8,10 @@ class User < ApplicationRecord
   has_many :entries, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :rooms, through: :entries
+  has_many :owned_groups, class_name: "Group", foreign_key: :owner_id, dependent: :destroy
+
+  has_many :group_users, dependent: :destroy
+  has_many :groups, through: :group_users
 
   has_many :active_relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
 

@@ -1,0 +1,28 @@
+<%= form_with model: group do |f| %>
+  <% if group.errors.any? %>
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        <% group.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, "グループ名" %>
+    <%= f.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :introduction, "紹介文" %>
+    <%= f.text_area :introduction, rows: 4, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :image, "グループ画像" %>
+    <%= f.file_field :image, accept: "image/*", class: "form-control" %>
+  </div>
+  
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>
