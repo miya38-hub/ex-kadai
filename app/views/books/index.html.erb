@@ -19,6 +19,12 @@
     <% end %>
       <h2>Books</h2>
 
+      <div class="mb-3">
+        <%= link_to "新着順", books_path %>
+        |
+        <%= link_to "評価の高い順", books_path(sort: "score")%>
+      </div>
+      
       <table class="table table-hover table-inverse">
         <thead>
           <tr>

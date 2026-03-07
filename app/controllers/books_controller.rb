@@ -51,6 +51,12 @@ end
 
     @book = Book.new
     @user = current_user
+
+    if params[:sort] == "score"
+      @books = Book.order(score: :desc)
+    else
+      @books = Book.order(created_at: :desc)
+    end
   end
 
   def show
