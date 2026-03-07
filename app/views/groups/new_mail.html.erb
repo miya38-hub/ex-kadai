@@ -7,7 +7,7 @@
     </div>
   <% end %>
 
-  <%= form_with url: send_mail_group_path(@group), method: :post, local: true do |f| %>
+  <%= form_with url: send_mail_group_path(@group), method: :post, data: { turbo: false } do |f| %>
     <div class="mb-3">
       <label class="form-label">Title</label>
       <%= text_field_tag :mail_title, params[:mail_title], class: "form-control" %>

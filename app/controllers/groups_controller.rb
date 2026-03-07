@@ -41,22 +41,23 @@ class GroupsController < ApplicationController
   def new_mail
   end
 
-  def send_mail
-    @title = params[:mail_title]
-    @content = params[:mail_content]
+def send_mail
+  @title = params[:mail_title]
+  @content = params[:mail_content]
 
-    if @title.blank? || @content.blank?
-      flash.now[:alert] = "タイトルと本文を入力してください"
-      render :new_mail, status: :unprocessable_entity
-      return
-    end
-
-    @group.users.where.not(email_address: nil).find_each do |user|
-      GroupMailer.notice_event(user, @group, @title, @content).deliver_now
-    end
-
-    render :send_mail_result
+  if @title.blank? || @content.blank?
+    flash.now[:alert] = "タイトルと本文を入力してください"
+    render :new_mail, status: :unprocessable_entity
+    return
   end
+
+  # メール送信処理を一旦停止
+  # @group.users.where.not(email_address: nil).find_each do |user|
+  #   GroupMailer.notice_event(user, @group, @title, @content).deliver_now
+  # end
+
+  render :send_mail_result
+end
 
   private
 
