@@ -89,6 +89,11 @@
       <%= f.text_area :body, class: "form-control", rows: 4 %>
     </div>
 
+    <div class="mb-2">
+      <%= f.label :score, "Rate" %>
+      <div id="post_raty"></div>
+    </div>
+    
     <%= f.submit "Create Book", class: "btn btn-success w-100" %>
   <% end %>
 </div>

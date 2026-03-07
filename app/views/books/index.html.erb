@@ -71,6 +71,11 @@
                 閲覧数: <%= book.views_count %>
               </td>
 
+              <!-- 評価 -->
+              <td class="text-center">
+                <div id="rate_<%= book.id %>"></div>
+              </td>
+
             </tr>
           <% end %>
         </tbody>
@@ -101,3 +106,24 @@
 
   </div>
 </div>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const elem = document.querySelector("#rate_<%= @book.id %>");
+  if (!elem || typeof Raty === "undefined") return;
+
+  elem.innerHTML = "";
+
+  const raty = new Raty(elem, {
+    readOnly: true,
+    score: <%= @book.score || 0 %>,
+    number: 5,
+    starType: "i",
+    starOn: "fa fa-star",
+    starOff: "fa fa-star-o",
+    starHalf: "fa fa-star-half-o"
+  });
+
+  raty.init();
+});
+</script>

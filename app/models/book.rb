@@ -9,4 +9,5 @@ class Book < ApplicationRecord
 
   validates :title, presence: true
   validates :body,  presence: true, length: { maximum: 200 }
+  validates :score, presence: true, inclusion: { in: 1.0..5.0 }
 end
