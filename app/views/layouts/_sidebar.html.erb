@@ -90,6 +90,11 @@
     </div>
 
     <div class="mb-2">
+      <%= f.label :category, "Category" %>
+      <%= f.text_field :category, class: "form-control", placeholder: "例: 小説, ビジネス, 技術" %>
+    </div>
+
+    <div class="mb-2">
       <%= f.label :score, "Rate" %>
       <div id="post_raty"></div>
     </div>

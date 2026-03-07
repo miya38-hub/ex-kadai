@@ -1,0 +1,103 @@
+<div class="container px-5 px-sm-0">
+  <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+    <% if current_user.present? %>
+      <div class="search-inline">
+        <%= render "searches/search" %>
+      </div>
+    <% end %>
+
+    <%= form_with url: category_search_books_path, method: :get, local: true, class: "d-flex gap-2 align-items-center mb-0" do %>
+      <%= text_field_tag :category,
+            params[:category],
+            class: "form-control",
+            placeholder: "カテゴリで検索",
+            style: "width: 220px;" %>
+      <%= submit_tag "検索", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+  <h2>Book search for "<%= @category %>"</h2>
+
+  <table class="table table-hover table-inverse">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Title</th>
+        <th>Opinion</th>
+        <th>Tag</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @books.each do |book| %>
+        <tr>
+          <!-- 一番左：プロフィール画像 -->
+          <td>
+            <%= link_to user_path(book.user) do %>
+              <% if book.user.profile_image&.attached? %>
+                <%= image_tag book.user.profile_image,
+                              style: "width:50px;height:50px;object-fit:cover;" %>
+              <% else %>
+                <%= image_tag "no_image.jpg",
+                              style: "width:50px;height:50px;object-fit:cover;" %>
+              <% end %>
+            <% end %>
+          </td>
+
+          <!-- タイトル -->
+          <td>
+            <%= link_to book.title, book_path(book) %>
+          </td>
+
+          <!-- opinion -->
+          <td>
+            <%= book.body %>
+          </td>
+
+          <!-- カテゴリ -->
+          <td>
+            <span class="badge bg-secondary"><%= book.category %></span>
+          </td>
+
+          <!-- コメント数 -->
+          <td class="text-center">
+            コメント数: <%= book.book_comments.count %>
+          </td>
+
+          <!-- 評価 -->
+          <td class="text-center">
+            <div id="rate_<%= book.id %>"></div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mt-3">
+    <%= link_to "Books一覧へ戻る", books_path, class: "btn btn-outline-secondary btn-sm" %>
+  </div>
+</div>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  <% @books.each do |book| %>
+    const elem<%= book.id %> = document.querySelector("#rate_<%= book.id %>");
+    if (elem<%= book.id %> && typeof Raty !== "undefined") {
+      elem<%= book.id %>.innerHTML = "";
+
+      const raty<%= book.id %> = new Raty(elem<%= book.id %>, {
+        readOnly: true,
+        score: <%= book.score || 0 %>,
+        number: 5,
+        starType: "i",
+        starOn: "fa fa-star",
+        starOff: "fa fa-star-o",
+        starHalf: "fa fa-star-half-o"
+      });
+
+      raty<%= book.id %>.init();
+    }
+  <% end %>
+});
+</script>

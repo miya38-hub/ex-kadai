@@ -16,6 +16,10 @@ Rails.application.routes.draw do
   resources :books, only: [:index, :show, :create, :show, :edit, :update, :destroy] do
     resource :favorite, only: [:create, :destroy]
     resources :book_comments, only: [:create, :destroy]
+
+    collection do
+      get :category_search
+    end
   end
 
   resource :session, only: [:new, :create, :destroy]

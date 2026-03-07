@@ -1,35 +1,24 @@
-<div class="container mt-3">
-  <%= form_with url: search_path, method: :get, local: true do |f| %>
-    <div class="row g-2 align-items-center">
+<%= form_with url: search_path, method: :get, local: true, class: "d-flex gap-2 align-items-center mb-0" do |f| %>
+  <%= f.select :range,
+    [["User", "User"], ["Book", "Book"]],
+    { selected: params[:range] },
+    class: "form-select",
+    style: "width: 120px;" %>
 
-      <div class="col-md-2">
-        <%= f.select :range,
-          [["User", "User"], ["Book", "Book"]],
-          { selected: params[:range] },
-          class: "form-select" %>
-      </div>
+  <%= f.select :method,
+    [["完全一致", "perfect"],
+     ["前方一致", "forward"],
+     ["後方一致", "backward"],
+     ["部分一致", "partial"]],
+    { selected: params[:method] },
+    class: "form-select",
+    style: "width: 140px;" %>
 
-      <div class="col-md-2">
-        <%= f.select :method,
-          [["完全一致", "perfect"],
-           ["前方一致", "forward"],
-           ["後方一致", "backward"],
-           ["部分一致", "partial"]],
-          { selected: params[:method] },
-          class: "form-select" %>
-      </div>
+  <%= f.text_field :word,
+    value: params[:word],
+    placeholder: "キーワードを入力",
+    class: "form-control",
+    style: "width: 220px;" %>
 
-      <div class="col-md-4">
-        <%= f.text_field :word,
-          value: params[:word],
-          placeholder: "キーワードを入力",
-          class: "form-control" %>
-      </div>
-
-      <div class="col-md-2">
-        <%= f.submit "検索", class: "btn btn-primary w-100" %>
-      </div>
-
-    </div>
-  <% end %>
-</div>
+  <%= f.submit "検索", class: "btn btn-primary" %>
+<% end %>

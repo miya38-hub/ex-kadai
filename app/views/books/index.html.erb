@@ -1,135 +1,119 @@
 <div class="container px-5 px-sm-0">
   <div class="row">
-  <% if @book&.errors&.any? %>
-    <div class="alert alert-danger">
-      <ul>
-        <% @book.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+    <% if @book&.errors&.any? %>
+      <div class="alert alert-danger">
+        <ul>
+          <% @book.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <%= render "layouts/sidebar", user: current_user, book: @book %>
 
-    <!-- 右側：Books一覧 -->
-
+    <!-- 右側 -->
     <div class="col-md-8 offset-md-1">
-    <% if current_user.present? %>
-      <%= render "searches/search" %>
-    <% end %>
+      <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+        <% if current_user.present? %>
+          <div class="search-inline">
+            <%= render "searches/search" %>
+          </div>
+        <% end %>
+
+        <%= form_with url: category_search_books_path, method: :get, local: true, class: "d-flex gap-2 align-items-center mb-0" do %>
+          <%= text_field_tag :category,
+                params[:category],
+                class: "form-control",
+                placeholder: "カテゴリで検索",
+                style: "width: 220px;" %>
+          <%= submit_tag "検索", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+
       <h2>Books</h2>
 
       <div class="mb-3">
         <%= link_to "新着順", books_path %>
         |
-        <%= link_to "評価の高い順", books_path(sort: "score")%>
+        <%= link_to "評価の高い順", books_path(sort: "score") %>
       </div>
-      
+
       <table class="table table-hover table-inverse">
         <thead>
           <tr>
             <th></th>
             <th>Title</th>
             <th>Opinion</th>
+            <th>Tag</th>
           </tr>
         </thead>
 
         <tbody>
           <% @books.each do |book| %>
             <tr>
-              <!-- User -->
               <td>
                 <%= link_to user_path(book.user) do %>
                   <% if book.user.profile_image&.attached? %>
-                    <%= image_tag book.user.profile_image,
-                                  style: "width:50px;height:50px;object-fit:cover;" %>
+                    <%= image_tag book.user.profile_image, style: "width:50px;height:50px;object-fit:cover;" %>
                   <% else %>
-                    <%= image_tag "no_image.jpg",
-                                  style: "width:50px;height:50px;" %>
+                    <%= image_tag "no_image.jpg", style: "width:50px;height:50px;" %>
                   <% end %>
                 <% end %>
               </td>
 
-              <!-- Title -->
+              <td><%= link_to book.title, book_path(book) %></td>
+              <td><%= book.body %></td>
               <td>
-                <%= link_to book.title, book_path(book) %>
+                <%= link_to book.category,
+                category_search_books_path(category: book.category),
+                class: "text-decoration-none" %>
               </td>
 
-              <!-- Opinion -->
-              <td>
-                <%= book.body %>
-              </td>
-
-              <!-- いいね -->
               <td class="text-center">
                 <%= turbo_frame_tag dom_id(book, :favorite) do %>
                   <%= render "favorites/favorite_btn", book: book %>
                 <% end %>
               </td>
 
-              <!-- コメント数 -->
               <td class="text-center">
                 コメント数: <%= book.book_comments.count %>
               </td>
 
-              <!-- 閲覧数 -->
               <td class="text-center">
                 閲覧数: <%= book.views_count %>
               </td>
 
-              <!-- 評価 -->
               <td class="text-center">
                 <div id="rate_<%= book.id %>"></div>
               </td>
-
             </tr>
           <% end %>
         </tbody>
-
       </table>
+
       <div class="mt-4">
-      <h4>直近1週間 いいねが多い投稿</h4>
+        <h4>直近1週間 いいねが多い投稿</h4>
 
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Opinion</th>
-            <th class="text-center">週間いいね</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @weekly_rank_books.each do |book| %>
+        <table class="table table-sm">
+          <thead>
             <tr>
-              <td><%= link_to book.title, book_path(book) %></td>
-              <td><%= truncate(book.body, length: 60) %></td>
-              <td class="text-center"><%= book.weekly_favorites_count.to_i %></td>
+              <th>Title</th>
+              <th>Opinion</th>
+              <th class="text-center">週間いいね</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% @weekly_rank_books.each do |book| %>
+              <tr>
+                <td><%= link_to book.title, book_path(book) %></td>
+                <td><%= truncate(book.body, length: 60) %></td>
+                <td class="text-center"><%= book.weekly_favorites_count.to_i %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
-
   </div>
 </div>
-
-<script>
-document.addEventListener("turbo:load", () => {
-  const elem = document.querySelector("#rate_<%= @book.id %>");
-  if (!elem || typeof Raty === "undefined") return;
-
-  elem.innerHTML = "";
-
-  const raty = new Raty(elem, {
-    readOnly: true,
-    score: <%= @book.score || 0 %>,
-    number: 5,
-    starType: "i",
-    starOn: "fa fa-star",
-    starOff: "fa fa-star-o",
-    starHalf: "fa fa-star-half-o"
-  });
-
-  raty.init();
-});
-</script>

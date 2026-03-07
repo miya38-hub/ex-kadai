@@ -52,10 +52,15 @@ end
     @book = Book.new
     @user = current_user
 
-    if params[:sort] == "score"
-      @books = Book.order(score: :desc)
-    else
-      @books = Book.order(created_at: :desc)
+    @books =
+      if params[:sort] == "score"
+        Book.order(score: :desc)
+      else
+        Book.order(created_at: :desc)
+      end
+
+    if params[:category].present?
+      @books = @books.where("category LIKE ?", "%#{params[:category]}%")
     end
   end
 
@@ -66,6 +71,11 @@ end
     @book_new = Book.new
     @book_comments = @book.book_comments.includes(:user).order(created_at: :desc)
     @book.increment!(:views_count)
+  end
+
+  def category_search
+    @category = params[:category]
+    @books = Book.includes(:user, :book_comments).where(category: @category)
   end
 
   private
@@ -82,6 +92,6 @@ end
   end
 
   def book_params
-    params.require(:book).permit(:title, :body, :score)
+    params.require(:book).permit(:title, :body, :score, :category)
   end
 end
