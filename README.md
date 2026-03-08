@@ -1,24 +1,78 @@
-# README
+# Bookers2
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## サイト概要
+本の感想を投稿し、ユーザー同士で交流できるSNSアプリです。  
+ユーザーは投稿に対して「いいね」「コメント」「評価」を行うことができ、  
+フォロー機能やDM機能を通してユーザー同士でコミュニケーションができます。
 
-Things you may want to cover:
+---
 
-* Ruby version
+## サイトテーマ
+本のレビューを共有し、ユーザー同士が交流できるコミュニティサイト
 
-* System dependencies
+---
 
-* Configuration
+## 主な機能
 
-* Database creation
+### ユーザー機能
+- ユーザー登録 / ログイン
+- プロフィール編集
+- フォロー / フォロワー
 
-* Database initialization
+### 投稿機能
+- 本のレビュー投稿
+- カテゴリタグ
+- 閲覧数表示
+- 5段階評価（Raty）
+- いいね機能
+- コメント機能
 
-* How to run the test suite
+### コミュニケーション機能
+- DM機能（相互フォローのみ）
+- グループ作成
+- グループ参加 / 退出
+- グループメンバー表示
 
-* Services (job queues, cache servers, search engines, etc.)
+### 検索機能
+- ユーザー検索
+- 投稿検索
+- カテゴリ検索
 
-* Deployment instructions
+### ランキング
+- 週間いいねランキング
 
-* ...
+### データ可視化
+- ユーザー投稿数グラフ（Chart.js）
+
+---
+
+## 使用技術
+
+### バックエンド
+- Ruby
+- Ruby on Rails
+
+### フロントエンド
+- HTML
+- CSS
+- Bootstrap
+- JavaScript
+
+### ライブラリ
+- Turbo
+- Chart.js
+- Raty.js
+
+### 開発環境
+- AWS Cloud9
+- Git / GitHub
+
+---
+
+## ER図
+（ここにER図を貼る）
+
+---
+
+## 開発期間
+約3週間
