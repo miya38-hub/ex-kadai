@@ -65,3 +65,5 @@ group :test do
 end
 
   gem 'net-smtp'
+
+  gem "dartsass-rails"

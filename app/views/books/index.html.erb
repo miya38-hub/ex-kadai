@@ -55,9 +55,9 @@
               <td>
                 <%= link_to user_path(book.user) do %>
                   <% if book.user.profile_image&.attached? %>
-                    <%= image_tag book.user.profile_image, style: "width:50px;height:50px;object-fit:cover;" %>
+                    <%= image_tag book.user.profile_image, class: "user-avatar" %>
                   <% else %>
-                    <%= image_tag "no_image.jpg", style: "width:50px;height:50px;" %>
+                    <%= image_tag "no_image.jpg", class: "user-avatar" %>
                   <% end %>
                 <% end %>
               </td>
