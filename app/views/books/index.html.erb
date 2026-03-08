@@ -1,10 +1,10 @@
-<div class="container px-5 px-sm-0">
-  <div class="row">
+<div class="container px-5 px-sm-0 books-index">
+  <div class="row books-index__row-layout">
     <% if @book&.errors&.any? %>
-      <div class="alert alert-danger">
-        <ul>
+      <div class="alert alert-danger books-index__alert">
+        <ul class="books-index__error-list">
           <% @book.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
+            <li class="books-index__error-item"><%= message %></li>
           <% end %>
         </ul>
       </div>
@@ -12,103 +12,118 @@
 
     <%= render "layouts/sidebar", user: current_user, book: @book %>
 
-    <!-- 右側 -->
-    <div class="col-md-8 offset-md-1">
-      <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+    <div class="col-md-8 offset-md-1 books-index__content">
+      <div class="d-flex align-items-center gap-3 mb-3 flex-wrap books-index__search-area">
         <% if current_user.present? %>
-          <div class="search-inline">
+          <div class="books-index__search-form">
             <%= render "searches/search" %>
           </div>
         <% end %>
 
-        <%= form_with url: category_search_books_path, method: :get, local: true, class: "d-flex gap-2 align-items-center mb-0" do %>
+        <%= form_with url: category_search_books_path, method: :get, local: true,
+                      class: "d-flex gap-2 align-items-center mb-0 books-index__category-search-form" do %>
           <%= text_field_tag :category,
                 params[:category],
-                class: "form-control",
-                placeholder: "カテゴリで検索",
-                style: "width: 220px;" %>
-          <%= submit_tag "検索", class: "btn btn-primary" %>
+                class: "form-control books-index__category-search-input",
+                placeholder: "カテゴリで検索" %>
+          <%= submit_tag "検索", class: "btn btn-primary books-index__category-search-button" %>
         <% end %>
       </div>
 
-      <h2>Books</h2>
+      <h2 class="books-index__title">Books</h2>
 
-      <div class="mb-3">
-        <%= link_to "新着順", books_path %>
-        |
-        <%= link_to "評価の高い順", books_path(sort: "score") %>
+      <div class="mb-3 books-index__sort">
+        <%= link_to "新着順", books_path, class: "books-index__sort-link" %>
+        <span class="books-index__sort-separator">|</span>
+        <%= link_to "評価の高い順", books_path(sort: "score"), class: "books-index__sort-link" %>
       </div>
 
-      <table class="table table-hover table-inverse">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Title</th>
-            <th>Opinion</th>
-            <th>Tag</th>
+      <table class="table table-hover table-inverse books-index__table">
+        <thead class="books-index__table-head">
+          <tr class="books-index__table-head-row">
+            <th class="books-index__table-header"></th>
+            <th class="books-index__table-header">Title</th>
+            <th class="books-index__table-header">Opinion</th>
+            <th class="books-index__table-header">Tag</th>
+            <th class="books-index__table-header"></th>
+            <th class="books-index__table-header"></th>
+            <th class="books-index__table-header"></th>
+            <th class="books-index__table-header"></th>
           </tr>
         </thead>
 
-        <tbody>
+        <tbody class="books-index__table-body">
           <% @books.each do |book| %>
-            <tr>
-              <td>
-                <%= link_to user_path(book.user) do %>
+            <tr class="books-index__table-row">
+              <td class="books-index__table-cell books-index__table-cell--user">
+                <%= link_to user_path(book.user), class: "books-index__user-link" do %>
                   <% if book.user.profile_image&.attached? %>
-                    <%= image_tag book.user.profile_image, class: "user-avatar" %>
+                    <%= image_tag book.user.profile_image, class: "books-index__user-image" %>
                   <% else %>
-                    <%= image_tag "no_image.jpg", class: "user-avatar" %>
+                    <%= image_tag "no_image.jpg", class: "books-index__user-image" %>
                   <% end %>
                 <% end %>
               </td>
 
-              <td><%= link_to book.title, book_path(book) %></td>
-              <td><%= book.body %></td>
-              <td>
-                <%= link_to book.category,
-                category_search_books_path(category: book.category),
-                class: "text-decoration-none" %>
+              <td class="books-index__table-cell books-index__table-cell--title">
+                <%= link_to book.title, book_path(book), class: "books-index__book-link" %>
               </td>
 
-              <td class="text-center">
+              <td class="books-index__table-cell books-index__table-cell--body">
+                <%= book.body %>
+              </td>
+
+              <td class="books-index__table-cell books-index__table-cell--category">
+                <%= link_to book.category,
+                    category_search_books_path(category: book.category),
+                    class: "books-index__category-link" %>
+              </td>
+
+              <td class="text-center books-index__table-cell books-index__table-cell--favorite">
                 <%= turbo_frame_tag dom_id(book, :favorite) do %>
                   <%= render "favorites/favorite_btn", book: book %>
                 <% end %>
               </td>
 
-              <td class="text-center">
+              <td class="text-center books-index__table-cell books-index__table-cell--comments">
                 コメント数: <%= book.book_comments.count %>
               </td>
 
-              <td class="text-center">
+              <td class="text-center books-index__table-cell books-index__table-cell--views">
                 閲覧数: <%= book.views_count %>
               </td>
 
-              <td class="text-center">
-                <div id="rate_<%= book.id %>"></div>
+              <td class="text-center books-index__table-cell books-index__table-cell--rating">
+                <div id="rate_<%= book.id %>" class="books-index__rating"></div>
               </td>
             </tr>
           <% end %>
         </tbody>
       </table>
 
-      <div class="mt-4">
-        <h4>直近1週間 いいねが多い投稿</h4>
+      <div class="mt-4 books-index__weekly-ranking">
+        <h4 class="books-index__weekly-ranking-title">直近1週間 いいねが多い投稿</h4>
 
-        <table class="table table-sm">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Opinion</th>
-              <th class="text-center">週間いいね</th>
+        <table class="table table-sm books-index__weekly-ranking-table">
+          <thead class="books-index__weekly-ranking-head">
+            <tr class="books-index__weekly-ranking-row">
+              <th class="books-index__weekly-ranking-header">Title</th>
+              <th class="books-index__weekly-ranking-header">Opinion</th>
+              <th class="text-center books-index__weekly-ranking-header">週間いいね</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="books-index__weekly-ranking-body">
             <% @weekly_rank_books.each do |book| %>
-              <tr>
-                <td><%= link_to book.title, book_path(book) %></td>
-                <td><%= truncate(book.body, length: 60) %></td>
-                <td class="text-center"><%= book.weekly_favorites_count.to_i %></td>
+              <tr class="books-index__weekly-ranking-row">
+                <td class="books-index__weekly-ranking-cell">
+                  <%= link_to book.title, book_path(book), class: "books-index__weekly-ranking-link" %>
+                </td>
+                <td class="books-index__weekly-ranking-cell">
+                  <%= truncate(book.body, length: 60) %>
+                </td>
+                <td class="text-center books-index__weekly-ranking-cell">
+                  <%= book.weekly_favorites_count.to_i %>
+                </td>
               </tr>
             <% end %>
           </tbody>
