@@ -1,0 +1,82 @@
+.col-md-3
+  h2 User info
+
+  - sidebar_user = user
+
+  - if sidebar_user.profile_image.attached?
+    = image_tag sidebar_user.profile_image, class: "img-fluid", style: "width:100px;height:100px;object-fit:cover;"
+  - else
+    = image_tag "no_image.jpg", class: "img-fluid", style: "width:100px;height:100px;object-fit:cover;"
+
+  table.table.mt-3
+    tr
+      th name
+      td = sidebar_user.name
+
+    tr
+      th introduction
+      td = sidebar_user.introduction
+
+    tr
+      th follows
+      td
+        = link_to sidebar_user.followings.count,
+          following_user_path(sidebar_user),
+          class: "text-decoration-none small"
+
+    tr
+      th followers
+      td
+        = link_to sidebar_user.followers.count,
+          followers_user_path(sidebar_user),
+          class: "text-decoration-none small"
+
+    tr
+      th
+      td.text-start
+        .mt-2.d-flex.gap-2.align-items-center
+          - if authenticated? && current_user != sidebar_user
+            - if current_user.following?(sidebar_user)
+              - rel = current_user.active_relationships.find_by(followed_id: sidebar_user.id)
+
+              .mt-2.d-flex.gap-2
+                = button_to "フォローを外す",
+                  relationship_path(rel),
+                  method: :delete,
+                  class: "btn btn-outline-secondary btn-sm"
+
+                - if current_user.mutual_follow?(sidebar_user)
+                  = button_to "DMを始める",
+                    rooms_path(user_id: sidebar_user.id),
+                    method: :post,
+                    class: "btn btn-success btn-sm"
+            - else
+              = button_to "フォローする",
+                relationships_path(followed_id: sidebar_user.id),
+                method: :post,
+                class: "btn btn-primary btn-sm"
+
+  .row.mb-3
+    = link_to edit_user_path(sidebar_user), class: "btn btn-outline-secondary w-100" do
+      i.fa-solid.fa-user-gear
+
+  h2.mt-3 New book
+
+  = form_with model: book, url: books_path, local: true do |f|
+    .mb-2
+      = f.label :title, "Title"
+      = f.text_field :title, class: "form-control"
+
+    .mb-2
+      = f.label :body, "Body"
+      = f.text_area :body, class: "form-control", rows: 4
+
+    .mb-2
+      = f.label :category, "Category"
+      = f.text_field :category, class: "form-control", placeholder: "例: 小説, ビジネス, 技術"
+
+    .mb-2
+      = f.label :score, "Rate"
+      #post_raty
+
+    = f.submit "Create Book", class: "btn btn-success w-100"

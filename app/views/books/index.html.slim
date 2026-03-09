@@ -1,0 +1,95 @@
+.container.px-5.px-sm-0.books-index
+  .row.books-index__row-layout
+    - if @book&.errors&.any?
+      .alert.alert-danger.books-index__alert
+        ul.books-index__error-list
+          - @book.errors.full_messages.each do |message|
+            li.books-index__error-item = message
+
+    = render "layouts/sidebar", user: current_user, book: @book
+
+    .col-md-8.offset-md-1.books-index__content
+      .d-flex.align-items-center.gap-3.mb-3.flex-wrap.books-index__search-area
+        - if current_user.present?
+          .books-index__search-form
+            = render "searches/search"
+
+        = form_with url: category_search_books_path, method: :get, local: true, class: "d-flex gap-2 align-items-center mb-0 books-index__category-search-form" do
+          = text_field_tag :category,
+            params[:category],
+            class: "form-control books-index__category-search-input",
+            placeholder: "カテゴリで検索"
+          = submit_tag "検索", class: "btn btn-primary books-index__category-search-button"
+
+      h2.books-index__title Books
+
+      .mb-3.books-index__sort
+        = link_to "新着順", books_path, class: "books-index__sort-link"
+        span.books-index__sort-separator |
+        = link_to "評価の高い順", books_path(sort: "score"), class: "books-index__sort-link"
+
+      table.table.table-hover.table-inverse.books-index__table
+        thead.books-index__table-head
+          tr.books-index__table-head-row
+            th.books-index__table-header
+            th.books-index__table-header Title
+            th.books-index__table-header Opinion
+            th.books-index__table-header Tag
+            th.books-index__table-header
+            th.books-index__table-header
+            th.books-index__table-header
+            th.books-index__table-header
+
+        tbody.books-index__table-body
+          - @books.each do |book|
+            tr.books-index__table-row
+              td.books-index__table-cell.books-index__table-cell--user
+                = link_to user_path(book.user), class: "books-index__user-link" do
+                  - if book.user.profile_image&.attached?
+                    = image_tag book.user.profile_image, class: "books-index__user-image"
+                  - else
+                    = image_tag "no_image.jpg", class: "books-index__user-image"
+
+              td.books-index__table-cell.books-index__table-cell--title
+                = link_to book.title, book_path(book), class: "books-index__book-link"
+
+              td.books-index__table-cell.books-index__table-cell--body
+                = book.body
+
+              td.books-index__table-cell.books-index__table-cell--category
+                = link_to book.category, category_search_books_path(category: book.category), class: "books-index__category-link"
+
+              td.text-center.books-index__table-cell.books-index__table-cell--favorite
+                = turbo_frame_tag dom_id(book, :favorite) do
+                  = render "favorites/favorite_btn", book: book
+
+              td.text-center.books-index__table-cell.books-index__table-cell--comments
+                | コメント数:
+                = book.book_comments.count
+
+              td.text-center.books-index__table-cell.books-index__table-cell--views
+                | 閲覧数:
+                = book.views_count
+
+              td.text-center.books-index__table-cell.books-index__table-cell--rating
+                .books-index__rating id="rate_#{book.id}"
+
+      .mt-4.books-index__weekly-ranking
+        h4.books-index__weekly-ranking-title 直近1週間 いいねが多い投稿
+
+        table.table.table-sm.books-index__weekly-ranking-table
+          thead.books-index__weekly-ranking-head
+            tr.books-index__weekly-ranking-row
+              th.books-index__weekly-ranking-header Title
+              th.books-index__weekly-ranking-header Opinion
+              th.text-center.books-index__weekly-ranking-header 週間いいね
+
+          tbody.books-index__weekly-ranking-body
+            - @weekly_rank_books.each do |book|
+              tr.books-index__weekly-ranking-row
+                td.books-index__weekly-ranking-cell
+                  = link_to book.title, book_path(book), class: "books-index__weekly-ranking-link"
+                td.books-index__weekly-ranking-cell
+                  = truncate(book.body, length: 60)
+                td.text-center.books-index__weekly-ranking-cell
+                  = book.weekly_favorites_count.to_i
