@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: [:show, :edit, :update, :new_mail, :send_mail]
-  before_action :require_owner, only: [:edit, :update, :new_mail, :send_mail]
+  before_action :set_group, only: [ :show, :edit, :update, :new_mail, :send_mail ]
+  before_action :require_owner, only: [ :edit, :update, :new_mail, :send_mail ]
 
   def index
     @groups = Group.includes(:owner, image_attachment: :blob).order(created_at: :desc)

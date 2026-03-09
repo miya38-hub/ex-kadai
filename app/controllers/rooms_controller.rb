@@ -1,5 +1,4 @@
 class RoomsController < ApplicationController
-
   def create
     target = User.find(params[:user_id])
 

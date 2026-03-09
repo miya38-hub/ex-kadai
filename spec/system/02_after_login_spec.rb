@@ -172,7 +172,7 @@ describe '[STEP2] ユーザログイン後のテスト' do
         expect { click_button 'Create Book' }.to change(user.books, :count).by(1)
       end
     end
-    
+
     # === ユーザーが本の投稿者である場合に編集画面に遷移する ===
     # BooksController > editのロジックが破綻していないかの妥当性を兼ねる
     # ==========================================================

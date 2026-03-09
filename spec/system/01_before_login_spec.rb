@@ -71,7 +71,7 @@ describe '[STEP1] ユーザログイン前のテスト' do
 
     context 'リンクの内容を確認' do
       subject { current_path }
-      
+
       it 'Bookersを押すと、トップ画面に遷移する', spec_category: "ルーティング・URL設定の理解(ログイン状況に合わせた応用)" do
         home_link = find_all('a')[0].text
         home_link = home_link.delete(' ')

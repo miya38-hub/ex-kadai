@@ -1,5 +1,4 @@
 class MessagesController < ApplicationController
-
   def create
     room = Room.find(message_params[:room_id])
 

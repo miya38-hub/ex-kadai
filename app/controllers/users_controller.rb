@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :is_matching_login_user, only: [:edit, :update]
-  allow_unauthenticated_access only: [:new, :create]
+  before_action :is_matching_login_user, only: [ :edit, :update ]
+  allow_unauthenticated_access only: [ :new, :create ]
 
   def edit
     @user = User.find(params[:id])
@@ -39,7 +39,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @book = Book.new
     @books = @user.books
-    
+
     today = Time.zone.today
 
     today_range     = today.beginning_of_day..today.end_of_day
@@ -87,7 +87,7 @@ class UsersController < ApplicationController
       .transform_keys { |k| k.is_a?(Date) ? k : k.to_date }
 
     @daily_book_counts = (start_date..end_date).map do |date|
-      [date, daily_hash[date] || 0]
+      [ date, daily_hash[date] || 0 ]
     end
   end
 
@@ -119,10 +119,10 @@ class UsersController < ApplicationController
   end
 
   private
- 
-    # name, email_address, password, password_confirmation を許可
+
+  # name, email_address, password, password_confirmation を許可
   def user_params
-    params.require(:user).permit(:name, :email_address, :password, :password_confirmation,:introduction, :profile_image)
+    params.require(:user).permit(:name, :email_address, :password, :password_confirmation, :introduction, :profile_image)
   end
 
   def is_matching_login_user

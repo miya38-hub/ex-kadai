@@ -1,6 +1,6 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: [:edit, :update, :destroy]
-  before_action :authorize_book!, only: [:edit, :update, :destroy]
+  before_action :set_book, only: [ :edit, :update, :destroy ]
+  before_action :authorize_book!, only: [ :edit, :update, :destroy ]
 
   def edit
 end
@@ -26,7 +26,7 @@ end
       redirect_to book_path(@book), notice: "You have created book successfully."
     else
       @user = current_user
-      @books = Book.all 
+      @books = Book.all
       render :index, status: :unprocessable_entity
     end
   end
@@ -37,7 +37,7 @@ end
 
     join_sql = ActiveRecord::Base.send(
       :sanitize_sql_array,
-      ["LEFT JOIN favorites ON favorites.book_id = books.id AND favorites.created_at BETWEEN ? AND ?", from, to]
+      [ "LEFT JOIN favorites ON favorites.book_id = books.id AND favorites.created_at BETWEEN ? AND ?", from, to ]
     )
 
     base = Book
